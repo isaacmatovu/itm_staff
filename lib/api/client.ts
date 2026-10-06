@@ -2,8 +2,7 @@
 // httpOnly cookies (itm_session / itm_refresh) — credentials: 'include' on
 // every request, cookie handling itself is entirely the browser's job.
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080/api/v1";
-
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
 export class ApiError extends Error {
   code: number;
   details?: unknown;
@@ -32,7 +31,11 @@ async function unwrap<T>(res: Response): Promise<T> {
 
   if (!res.ok || !body || body.success === false) {
     const err = body?.error;
-    throw new ApiError(err?.code ?? res.status, err?.message ?? "Request failed", err?.details);
+    throw new ApiError(
+      err?.code ?? res.status,
+      err?.message ?? "Request failed",
+      err?.details,
+    );
   }
 
   return body.data as T;
@@ -59,17 +62,22 @@ interface RequestOptions {
 }
 
 function buildUrl(path: string, query?: RequestOptions["query"]) {
-  const url = new URL(`${API_URL}${path}`);
+  const url = new URL(`${API_URL}${path}`, window.location.origin);
   if (query) {
     for (const [key, value] of Object.entries(query)) {
-      if (value !== undefined && value !== "") url.searchParams.set(key, String(value));
+      if (value !== undefined && value !== "")
+        url.searchParams.set(key, String(value));
     }
   }
   return url.toString();
 }
 
 // Wrapped {success,data} response, with one silent refresh-and-retry on 401.
-export async function apiFetch<T>(path: string, options: RequestOptions = {}, _retried = false): Promise<T> {
+export async function apiFetch<T>(
+  path: string,
+  options: RequestOptions = {},
+  _retried = false,
+): Promise<T> {
   const res = await fetch(buildUrl(path, options.query), {
     method: options.method ?? "GET",
     credentials: "include",
@@ -88,7 +96,10 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}, _r
 // Raw (unwrapped) response — the 2FA setup/verify endpoints return their
 // body directly on success, but still use the {success:false,error} shape
 // on failure, so errors still need the same handling as unwrap() gives.
-export async function apiFetchRaw<T>(path: string, options: RequestOptions = {}): Promise<T> {
+export async function apiFetchRaw<T>(
+  path: string,
+  options: RequestOptions = {},
+): Promise<T> {
   const res = await fetch(buildUrl(path, options.query), {
     method: options.method ?? "GET",
     credentials: "include",
@@ -100,7 +111,11 @@ export async function apiFetchRaw<T>(path: string, options: RequestOptions = {})
 
   if (!res.ok || (body && body.success === false)) {
     const err = body?.error;
-    throw new ApiError(err?.code ?? res.status, err?.message ?? "Request failed", err?.details);
+    throw new ApiError(
+      err?.code ?? res.status,
+      err?.message ?? "Request failed",
+      err?.details,
+    );
   }
 
   return body as T;

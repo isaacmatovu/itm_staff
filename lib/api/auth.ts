@@ -1,4 +1,4 @@
-import { apiFetch, apiFetchRaw, API_URL } from "./client";
+import { apiFetch, apiFetchRaw} from "./client";
 import type { ProfileResponse, TotpSetupResponse } from "./types";
 
 // Not a fetch — a full navigation to a different origin (the Go API, not
@@ -6,7 +6,7 @@ import type { ProfileResponse, TotpSetupResponse } from "./types";
 // be a real browser navigation, not router.push/redirect.
 export function redirectToGoogleLogin() {
   // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- external origin, not an internal route
-  window.location.href = `${API_URL}/auth/google/login`;
+  window.location.href = `/api/v1/auth/google/login?return_to=${encodeURIComponent(window.location.origin)}`;
 }
 
 export function getProfile() {
