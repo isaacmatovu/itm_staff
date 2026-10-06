@@ -221,6 +221,13 @@ select.input { cursor: pointer; }
 @media (min-width: 640px) {
   .input-status-select { width: 150px; flex: none; }
 }
+/* TaskRow sits on .card, whose unlayered `flex-direction: column` beats
+   Tailwind's flex-row / sm:flex-row — so the row direction lives here:
+   stacked on phones, a single row from sm up. */
+.task-row { flex-direction: column; align-items: stretch; }
+@media (min-width: 640px) {
+  .task-row { flex-direction: row; align-items: center; }
+}
 
 /* — chips / status badges — */
 .chip {

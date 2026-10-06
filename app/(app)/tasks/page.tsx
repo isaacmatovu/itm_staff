@@ -36,7 +36,8 @@ export default function TaskListPage() {
     const copy = [...tasks];
     copy.sort((a, b) => {
       if (sortKey === "title") return a.title.localeCompare(b.title);
-      if (sortKey === "work_status") return a.work_status.localeCompare(b.work_status);
+      if (sortKey === "work_status")
+        return a.work_status.localeCompare(b.work_status);
       // due_date: nulls (awaiting approval) sort last
       if (!a.due_date) return 1;
       if (!b.due_date) return -1;
@@ -67,12 +68,21 @@ export default function TaskListPage() {
         </Link>
       </div>
 
-      <div className="card flex-wrap items-center gap-3" style={{ flexDirection: "row", padding: "14px 16px" }}>
+      <div
+        className="card flex-wrap items-center gap-3"
+        style={{ flexDirection: "row", padding: "14px 16px" }}
+      >
         <div className="relative min-w-35 flex-1 sm:min-w-50">
           <Search
             size={16}
             strokeWidth={1.75}
-            style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "var(--color-text-muted)" }}
+            style={{
+              position: "absolute",
+              left: 14,
+              top: "50%",
+              transform: "translateY(-50%)",
+              color: "var(--color-text-muted)",
+            }}
           />
           <input
             className="input"
@@ -113,7 +123,12 @@ export default function TaskListPage() {
           <option value="needs_changes">Needs Changes</option>
           <option value="approved">Approved</option>
         </select>
-        <select className="input" style={{ maxWidth: 150, flex: "none" }} value={sortKey} onChange={(e) => setSortKey(e.target.value as SortKey)}>
+        <select
+          className="input"
+          style={{ maxWidth: 150, flex: "none" }}
+          value={sortKey}
+          onChange={(e) => setSortKey(e.target.value as SortKey)}
+        >
           <option value="due_date">Sort: Due date</option>
           <option value="title">Sort: Title</option>
           <option value="work_status">Sort: Status</option>
@@ -138,10 +153,20 @@ export default function TaskListPage() {
             Page {page} of {totalPages} · {data?.total ?? 0} tasks
           </span>
           <div className="flex gap-2">
-            <button type="button" className="btn btn-secondary btn-sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              disabled={page <= 1}
+              onClick={() => setPage((p) => p - 1)}
+            >
               Previous
             </button>
-            <button type="button" className="btn btn-secondary btn-sm" disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              disabled={page >= totalPages}
+              onClick={() => setPage((p) => p + 1)}
+            >
               Next
             </button>
           </div>
@@ -151,15 +176,38 @@ export default function TaskListPage() {
   );
 }
 
-function EmptyState({ hasFilters, onClear }: { hasFilters: boolean; onClear: () => void }) {
+function EmptyState({
+  hasFilters,
+  onClear,
+}: {
+  hasFilters: boolean;
+  onClear: () => void;
+}) {
   return (
-    <div className="card items-center gap-3 text-center" style={{ padding: "48px 24px" }}>
-      <span className="icon-chip" style={{ width: 52, height: 52, background: "var(--color-surface-2)", color: "var(--color-text-muted)" }}>
+    <div
+      className="card items-center gap-3 text-center"
+      style={{ padding: "48px 24px" }}
+    >
+      <span
+        className="icon-chip"
+        style={{
+          width: 52,
+          height: 52,
+          background: "var(--color-surface-2)",
+          color: "var(--color-text-muted)",
+        }}
+      >
         <Inbox size={24} strokeWidth={1.75} />
       </span>
-      <div className="card-title">{hasFilters ? "No tasks match these filters" : "No tasks yet"}</div>
+      <div className="card-title">
+        {hasFilters ? "No tasks match these filters" : "No tasks yet"}
+      </div>
       {hasFilters && (
-        <button type="button" className="btn btn-secondary btn-sm" onClick={onClear}>
+        <button
+          type="button"
+          className="btn btn-secondary btn-sm"
+          onClick={onClear}
+        >
           Clear filters
         </button>
       )}

@@ -20,7 +20,7 @@ export function TaskRow({ task }: { task: TaskListItem }) {
 
   return (
     <div
-      className="card card-hover flex flex-wrap items-center justify-between gap-4"
+      className="card card-hover task-row justify-between gap-3 sm:gap-4"
       style={{ cursor: "pointer", padding: "16px 18px" }}
       onClick={() => router.push(`/tasks/${task.id}`)}
     >
@@ -29,13 +29,22 @@ export function TaskRow({ task }: { task: TaskListItem }) {
           {task.title}
         </span>
         <div className="flex flex-wrap items-center gap-1.5">
-          <StatusBadges approvalStatus={task.approval_status} workStatus={task.work_status} />
+          <StatusBadges
+            approvalStatus={task.approval_status}
+            workStatus={task.work_status}
+          />
           <OverdueFlag isOverdue={overdue} />
         </div>
       </div>
 
-      <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:flex-nowrap sm:shrink-0 sm:gap-3" onClick={(e) => e.stopPropagation()}>
-        <span className="text-sm text-muted sm:min-w-25" style={{ textAlign: "right", whiteSpace: "nowrap" }}>
+      <div
+        className="flex flex-wrap items-center justify-between gap-2 sm:shrink-0 sm:flex-nowrap sm:justify-end sm:gap-3"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <span
+          className="text-sm text-muted sm:min-w-25"
+          style={{ textAlign: "right", whiteSpace: "nowrap" }}
+        >
           {task.due_date ? formatDate(task.due_date) : "Awaiting approval"}
         </span>
         <select
@@ -43,7 +52,9 @@ export function TaskRow({ task }: { task: TaskListItem }) {
           style={{ minHeight: 36, fontSize: 13, padding: "6px 10px" }}
           value={task.work_status}
           disabled={updateStatus.isPending}
-          onChange={(e) => updateStatus.mutate({ work_status: e.target.value as WorkStatus })}
+          onChange={(e) =>
+            updateStatus.mutate({ work_status: e.target.value as WorkStatus })
+          }
         >
           {WORK_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
